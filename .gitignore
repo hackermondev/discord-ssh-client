@@ -1,0 +1,6 @@
+.env
+src/config/config/botConfig.json
+src/config/config/database.json
+dest/
+node_modules/
+package-lock.json

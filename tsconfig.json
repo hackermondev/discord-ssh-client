@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dest",
+        "resolveJsonModule": true,
+    },
+    "extends": "@tsconfig/node16/tsconfig.json"
+}

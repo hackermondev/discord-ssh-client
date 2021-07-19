@@ -1,0 +1,12 @@
+{
+    "token": "",
+    "activity": {
+        "type": "PLAYING",
+        "text": "with ssh servers!",
+        "status": "dnd"
+    },
+    "prefix": "!",
+    "owners": [],
+    "pastebinApiKey": "",
+    "encryptionKey": ""
+}
