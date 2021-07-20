@@ -15,7 +15,7 @@
     "typescript:build": "tsc",
     "dev": "node .",
     "production": "NODE_ENV=production node .",
-    "scripts:changeconfig": "bash scripts/acrions/changeconfig.sh"
+    "scripts:changeconfig": "bash scripts/actions/changeconfig.sh"
   },
   "dependencies": {
     "@types/node": "^16.3.3",
