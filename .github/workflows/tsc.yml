@@ -13,7 +13,7 @@ jobs:
       with:
         node-version: 12
     - name: rename config files
-        run: npm run scripts:changeconfig
+      run: npm run scripts:changeconfig
     - name: npm install
       run: npm install
     - name: tsc
