@@ -46,8 +46,18 @@ bot.on('rateLimit', (data: RateLimitData)=>{
 })
 
 bot.on('ready', async () => {
-    bot.user?.setActivity(config.botConfig.activity.text, { type: config.botConfig.activity.type })
-    bot.user?.setStatus(config.botConfig.activity.status)
+    console.log(`${config.botConfig.activity.type} ${config.botConfig.activity.text}`)
+
+    bot.user?.setPresence({
+        activity: {
+            type: config.botConfig.activity.type,
+            name: config.botConfig.activity.text
+        },
+        status: config.botConfig.activity.status
+    })
+
+    // bot.user?.setActivity(config.botConfig.activity.text, { type: config.botConfig.activity.type })
+    // bot.user?.setStatus(config.botConfig.activity.status)
 
     logger.debug(`got ready event, loading commands...`)
 

@@ -15,7 +15,7 @@ const commandCallback = async (client: Client, message: Message, args: string[])
 
     let githubLink = new MessageButton()
         .setStyle(`url`)
-        .setURL(`https://github.com/hackermondev/discord-ssh-bot`)
+        .setURL(`https://github.com/hackermondev/discord-ssh-client`)
         .setLabel(`GitHub`)
 
     let buttons = new MessageActionRow()
