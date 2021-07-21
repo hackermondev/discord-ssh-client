@@ -1,7 +1,7 @@
 import { Client, DatabaseClient, Logger } from "./core"
 import { Message, RateLimitData } from "discord.js"
 
-import { CommandOptions } from "./structures"
+import { CommandOptions, GuildData } from "./structures"
 
 import path from "path"
 import config from "./config/config"
@@ -93,9 +93,40 @@ bot.on('ready', async () => {
     logger.debug(`postgresql date: ${date.toString()}`)
 })
 
-bot.on('message', (message: Message)=>{
+bot.on('message', async (message: Message)=>{
     if(message.author.bot) return
-    if(!message.content.startsWith(config.botConfig.prefix)) return
+
+    var prefix: string = '$'
+    var guildData: GuildData | undefined = undefined
+
+    if(message.guild){
+        guildData = await bot.db.getGuildData(message.guild.id)
+
+        if(guildData == undefined){
+            // create guild data
+            guildData = {
+                'guild_id': message.guild.id,
+                'guild_data': {
+                    'prefix': '$',
+                    'ownerID': message.guild.ownerID,
+                    'blacklistedUsers': [],
+                    'disabledCommands': [],
+                },
+                'created_at': new Date()
+            }
+
+            await bot.db.query(`INSERT INTO guilds (guild_id, guild_data, created_at) VALUES ($1, $2, $3)`, [guildData.guild_id, guildData.guild_data, guildData.created_at])
+        }
+
+        // if(guildData.guild_is_blacklisted) return message.guild.leave()
+        // if(guildData.guild_is_blacklisted) return
+
+        prefix = guildData.guild_data.prefix   
+
+        // message.guildData = guildData     
+    }
+    
+    if(!message.content.startsWith(prefix)) return
 
     let args: string[] = message.content.slice(config.botConfig.prefix.length).trim().split(" ")
     let commandName: string | undefined = args.shift()?.toLowerCase()
@@ -103,6 +134,12 @@ bot.on('message', (message: Message)=>{
 
     if(!command) return
     if(command.isPrivate && !config.botConfig.owners.includes(message.author.id)) return
+
+    if(message.guild && guildData?.guild_data.blacklistedUsers.includes(message.author.id)) return message.react(`❌`)
+    
+    if(guildData?.guild_data.disabledCommands.includes(command.name)){
+        return
+    }
 
     logger.debug(`${message.author.tag} running command ${command.name}`)
 

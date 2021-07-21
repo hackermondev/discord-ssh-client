@@ -2,7 +2,9 @@
     "compilerOptions": {
         "rootDir": "./src",
         "outDir": "./dest",
-        "resolveJsonModule": true,
+        "removeComments": true,
+        "sourceMap": false,
+        "resolveJsonModule": true
     },
     "extends": "@tsconfig/node16/tsconfig.json"
 }
