@@ -1,4 +1,4 @@
-import { CommandOptions, ServerData, AuthData } from "../structures"
+import { CommandOptions, ServerData, AuthData, GuildData } from "../structures"
 
 import config from "../config/config"
 import { MessageBuilder, Client, SSHClient } from "../core"
@@ -6,6 +6,12 @@ import { MessageBuilder, Client, SSHClient } from "../core"
 import { Message, Collection } from "discord.js"
 
 const commandCallback = async (client: Client, message: Message, args: string[]) => {
+    var guildData: GuildData | undefined = undefined
+
+    if(message.guild){
+        guildData = await client.db.getGuildData(message.guild.id)
+    }
+    
     var command: string | undefined = args[0]
     var embed = new MessageBuilder(message)
         .setTitle(`Help Command`)
@@ -24,7 +30,7 @@ const commandCallback = async (client: Client, message: Message, args: string[])
             commandsText += `\`${cmd.name}\` `
         })
         
-        commandsText += `\n\nRun \`${config.botConfig.prefix}help <command>\` to learn more information`
+        commandsText += `\n\nRun \`${guildData?guildData.guild_data.prefix:config.botConfig.prefix}help <command>\` to learn more information`
         embed.setDescription(commandsText)
     } else {
         var commandInfo: any = client.commands.get(command)
@@ -32,7 +38,7 @@ const commandCallback = async (client: Client, message: Message, args: string[])
         if(!commandInfo){
             embed.setDescription(`Command was not found.`)
         } else {
-            embed.setDescription(`\`${config.botConfig.prefix}${commandInfo.usage || commandInfo.name}\` \n${commandInfo.description}\n\nAliases: ${commandInfo.aliases.map((a: string)=>{ return ` \`${a}\` `})}`)
+            embed.setDescription(`\`${guildData?guildData.guild_data.prefix:config.botConfig.prefix}${commandInfo.usage || commandInfo.name}\` \n${commandInfo.description}\n\nAliases: ${commandInfo.aliases.map((a: string)=>{ return ` \`${a}\` `})}`)
         }
     }
 

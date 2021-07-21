@@ -1,0 +1,34 @@
+{
+    "tableName": "guilds",
+    "createOnConnect": true,
+    "columns": [
+        {
+            "name": "database_id",
+            "type": "serial",
+            "required": true,
+            "isUnique": false,
+            "primary": false
+        },
+        {
+            "name": "guild_id",
+            "type": "TEXT",
+            "required": true,
+            "isUnique": true,
+            "primary": true
+        },
+        {
+            "name": "guild_data",
+            "type": "jsonb",
+            "required": true,
+            "isUnique": false,
+            "primary": false
+        },
+        {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "required": true,
+            "isUnique": false,
+            "primary": false
+        }
+    ]
+}

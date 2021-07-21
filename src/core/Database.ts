@@ -1,7 +1,9 @@
-import { Pool as PostgresqlClient, QueryResult } from "pg"
+import { Pool as PostgresqlClient, Query, QueryResult } from "pg"
 import config from "../config/config"
 
+import { GuildData } from "../structures"
 import AuthTable from "./database/tables/auth.json"
+import GuildTable from "./database/tables/guilds.json"
 
 interface ITableColumn{
     name: string
@@ -41,7 +43,15 @@ class DatabaseClient extends PostgresqlClient{
     }
 
     async createRequiredTables(){
-        this.createTable(AuthTable)
+        await this.createTable(AuthTable)
+        await this.createTable(GuildTable)
+    }
+
+    async getGuildData(guildID: string){
+        var query: QueryResult = await this.query(`SELECT * FROM guilds WHERE guild_id=$1`, [guildID])
+        var data: GuildData | undefined = query.rows[0]
+
+        return data
     }
 
     async createTable(tableData: ITable): Promise<boolean>{
