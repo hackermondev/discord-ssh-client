@@ -10,6 +10,15 @@ import disbut from "discord-buttons"
 import dotenv from "dotenv"
 import fs from "fs"
 
+process.on('uncaughtException', (err)=>{
+    logger.error(err)
+})
+
+process.on('unhandledRejection', (reason)=>{
+    logger.error(`unhandled rejection: ${reason}`)
+})
+
+
 dotenv.config()
 
 const logger = new Logger()
