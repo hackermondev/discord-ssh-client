@@ -6,6 +6,7 @@ interface ClientOptions extends BotOptions{
     token: string | undefined;
     databaseClient: DatabaseClient
     encryptionKey: string
+    topggKey?: string
 }
 
 export default ClientOptions

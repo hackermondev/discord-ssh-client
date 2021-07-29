@@ -4,3 +4,4 @@ src/config/config/database.json
 dest/
 node_modules/
 package-lock.json
+DOCKERID
