@@ -16,6 +16,7 @@ interface IbotConfig {
     owners: string[]
     pastebinApiKey?: string
     encryptionKey: string
+    topggKey?: string
 }
 
 interface IDatabaseConfig {

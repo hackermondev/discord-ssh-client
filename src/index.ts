@@ -10,11 +10,11 @@ import disbut from "discord-buttons"
 import dotenv from "dotenv"
 import fs from "fs"
 
-process.on('uncaughtException', (err)=>{
+process.on('uncaughtException', (err) => {
     logger.error(err)
 })
 
-process.on('unhandledRejection', (reason)=>{
+process.on('unhandledRejection', (reason) => {
     logger.error(`unhandled rejection: ${reason}`)
 })
 
@@ -42,15 +42,16 @@ const bot: Client = new Client({
     disableMentions: `all`,
     retryLimit: Infinity,
     encryptionKey: config.botConfig.encryptionKey,
-    databaseClient: database
+    databaseClient: database,
+    topggKey: config.botConfig.topggKey
 })
 
 disbut(bot)
-database.on('connect', ()=>{
+database.on('connect', () => {
     logger.debug(`connected to postgresql database.`)
 })
 
-bot.on('rateLimit', (data: RateLimitData)=>{
+bot.on('rateLimit', (data: RateLimitData) => {
     logger.debug(`rate limit on ${data.method} ${data.path}, timeout is ${data.timeout}`)
 })
 
@@ -75,14 +76,14 @@ bot.on('ready', async () => {
     commands.forEach((command: string) => {
         var cmd: CommandOptions = require(`./commands/${command}`).default
 
-        if(!cmd){
+        if (!cmd) {
             return logger.error(`could not load command ${command}`)
         }
 
         bot.commands.set(cmd.name, cmd)
 
-        if(cmd.aliases){
-            cmd.aliases.forEach((alias: string)=>{
+        if (cmd.aliases) {
+            cmd.aliases.forEach((alias: string) => {
                 bot.commands.set(alias, cmd)
             })
         }
@@ -98,20 +99,20 @@ bot.on('ready', async () => {
 
     var dateQuery = await database.runQuery(`SELECT NOW() as now`)
     var date: Date = dateQuery[0].now
-    
+
     logger.debug(`postgresql date: ${date.toString()}`)
 })
 
-bot.on('message', async (message: Message)=>{
-    if(message.author.bot) return
+bot.on('message', async (message: Message) => {
+    if (message.author.bot) return
 
     var prefix: string = '$'
     var guildData: GuildData | undefined = undefined
 
-    if(message.guild){
+    if (message.guild) {
         guildData = await bot.db.getGuildData(message.guild.id)
 
-        if(guildData == undefined){
+        if (guildData == undefined) {
             // create guild data
             guildData = {
                 'guild_id': message.guild.id,
@@ -130,23 +131,23 @@ bot.on('message', async (message: Message)=>{
         // if(guildData.guild_is_blacklisted) return message.guild.leave()
         // if(guildData.guild_is_blacklisted) return
 
-        prefix = guildData.guild_data.prefix   
+        prefix = guildData.guild_data.prefix
 
         // message.guildData = guildData     
     }
-    
-    if(!message.content.startsWith(prefix)) return
+
+    if (!message.content.startsWith(prefix)) return
 
     let args: string[] = message.content.slice(config.botConfig.prefix.length).trim().split(" ")
     let commandName: string | undefined = args.shift()?.toLowerCase()
     var command: CommandOptions | any = bot.commands.get(commandName)
 
-    if(!command) return
-    if(command.isPrivate && !config.botConfig.owners.includes(message.author.id)) return
+    if (!command) return
+    if (command.isPrivate && !config.botConfig.owners.includes(message.author.id)) return
 
-    if(message.guild && guildData?.guild_data.blacklistedUsers.includes(message.author.id)) return message.react(`❌`)
-    
-    if(guildData?.guild_data.disabledCommands.includes(command.name)){
+    if (message.guild && guildData?.guild_data.blacklistedUsers.includes(message.author.id)) return message.react(`❌`)
+
+    if (guildData?.guild_data.disabledCommands.includes(command.name)) {
         return
     }
 
@@ -159,8 +160,33 @@ bot.on('debug', (debugText: string) => {
     logger.debug(debugText)
 })
 
-bot.run(() => {
+bot.run(async () => {
     logger.log(`started bot on ${bot.user?.tag}`)
+
+    if (config.botConfig.topggKey) {
+        logger.debug(`posting updated stats to top.gg`)
+
+        var ok: boolean = await bot.postTopggStats()
+
+        if (ok == false) {
+            return logger.error(`could not post bot stats to top.gg`)
+        }
+
+        async function update() {
+            logger.debug(`updating stats on top.gg`)
+
+            var ok: boolean = await bot.postTopggStats()
+
+            if (ok == false) {
+                return logger.error(`could not post bot stats to top.gg`)
+            }
+
+            logger.debug(`updated stats on top.gg`)
+        }
+
+        bot.on('guildCreate', update)
+        bot.on('guildDelete', update)
+    }
 })
 
 // console.log(bot)
