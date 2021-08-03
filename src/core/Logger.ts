@@ -1,24 +1,23 @@
-import chalk from "chalk"
+import chalk from 'chalk';
 
-class Logger{
-    private prefix: string;
+class Logger {
+  private prefix: string;
 
-    constructor(prefix?: string){
-        this.prefix = prefix || `[ssh bot logger]`
-    }
+  constructor(prefix?: string) {
+    this.prefix = prefix || `[ssh bot logger]`;
+  }
 
-    debug(...text: [any]){
-        console.log(chalk.yellow(this.prefix, text))
-    }
-    
-    log(...text: [any]){
-        console.log(chalk.green(this.prefix, text))
-    }
+  debug(...text: [any]) {
+    console.log(chalk.yellow(this.prefix, text));
+  }
 
-    error(...text: [any]){
-        console.log(chalk.red(this.prefix, text))
-    }
+  log(...text: [any]) {
+    console.log(chalk.green(this.prefix, text));
+  }
 
+  error(...text: [any]) {
+    console.log(chalk.red(this.prefix, text));
+  }
 }
 
-export default Logger
+export default Logger;

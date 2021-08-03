@@ -1,7 +1,6 @@
-
 interface ServerData {
-    ipAddress: string
-    port: string | number
+  ipAddress: string;
+  port: string | number;
 }
 
-export default ServerData
+export default ServerData;
