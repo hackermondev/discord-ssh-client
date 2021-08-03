@@ -9,6 +9,7 @@
     "@types/pg": "^8.6.1",
     "bufferutil": "^4.0.3",
     "erlpack": "^0.1.3",
+    "prettier": "^2.3.2",
     "typescript": "^4.3.5",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
@@ -19,7 +20,8 @@
     "typescript:build": "tsc",
     "dev": "node .",
     "production": "NODE_ENV=production node .",
-    "scripts:changeconfig": "bash scripts/actions/changeconfig.sh"
+    "scripts:changeconfig": "bash scripts/actions/changeconfig.sh",
+    "style": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "dependencies": {
     "@types/node": "^16.3.3",

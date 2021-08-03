@@ -1,10 +1,9 @@
-import { Client } from "ssh2"
+import { Client } from 'ssh2';
 
-class SSHClient extends Client{
-
-    constructor(){
-        super()
-    }
+class SSHClient extends Client {
+  constructor() {
+    super();
+  }
 }
 
-export default SSHClient
+export default SSHClient;
